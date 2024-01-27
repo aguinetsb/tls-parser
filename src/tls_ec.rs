@@ -10,6 +10,7 @@ use rusticata_macros::newtype_enum;
 /// [IANA Supported Groups
 /// Registry](https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-8)
 #[derive(Clone, Copy, PartialEq, Eq, NomBE)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct NamedGroup(pub u16);
 
 newtype_enum! {

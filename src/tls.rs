@@ -67,6 +67,7 @@ impl From<TlsHandshakeType> for u8 {
 /// Only the TLS version defined in the TLS message header is meaningful, the
 /// version defined in the record should be ignored or set to TLS 1.0
 #[derive(Clone, Copy, Default, PartialEq, Eq, NomBE)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct TlsVersion(pub u16);
 
 impl TlsVersion {
@@ -127,6 +128,7 @@ impl From<TlsHeartbeatMessageType> for u8 {
 
 /// Content type, as defined in IANA TLS ContentType registry
 #[derive(Clone, Copy, PartialEq, Eq, NomBE)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct TlsRecordType(pub u8);
 
 newtype_enum! {
@@ -146,6 +148,7 @@ impl From<TlsRecordType> for u8 {
 }
 
 #[derive(Clone, Copy, Default, PartialEq, Eq, NomBE)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct TlsCompressionID(pub u8);
 
 newtype_enum! {
@@ -175,6 +178,7 @@ impl AsRef<u8> for TlsCompressionID {
 }
 
 #[derive(Clone, Copy, Default, PartialEq, Eq, NomBE)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct TlsCipherSuiteID(pub u16);
 
 impl TlsCipherSuiteID {
