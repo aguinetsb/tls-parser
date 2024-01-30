@@ -68,7 +68,7 @@ fn main() {
 
         let prf = titlecase_word(v[9]);
 
-        let key = u16::from_str_radix(v[0], 16).unwrap();
+        let key = u32::from_str_radix(v[0], 16).unwrap();
         let val = format!(
             r#"TlsCipherSuite{{
                 name:"{}",
@@ -100,7 +100,7 @@ fn main() {
 
     writeln!(
         &mut file,
-        "pub static CIPHERS: phf::Map<u16, TlsCipherSuite> = {};",
+        "pub static CIPHERS: phf::Map<u32, TlsCipherSuite> = {};",
         map.build()
     )
     .unwrap();

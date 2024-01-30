@@ -559,7 +559,7 @@ pub fn parse_tls_extension_renegotiation_info_content(i: &[u8]) -> IResult<&[u8]
 
 /// Encrypted Server Name, defined in [draft-ietf-tls-esni]
 pub fn parse_tls_extension_encrypted_server_name(i: &[u8]) -> IResult<&[u8], TlsExtension> {
-    let (i, ciphersuite) = map(be_u16, TlsCipherSuiteID)(i)?;
+    let (i, ciphersuite) = map(be_u16, |v| TlsCipherSuiteID(v as u32))(i)?;
     let (i, group) = NamedGroup::parse(i)?;
     let (i, key_share) = length_data(be_u16)(i)?;
     let (i, record_digest) = length_data(be_u16)(i)?;

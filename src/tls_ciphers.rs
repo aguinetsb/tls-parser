@@ -140,7 +140,7 @@ include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
 impl TlsCipherSuite {
     /// Attempt to get reference on `TlsCipherSuite` identified by `id`.
-    pub fn from_id(id: u16) -> Option<&'static TlsCipherSuite> {
+    pub fn from_id(id: u32) -> Option<&'static TlsCipherSuite> {
         CIPHERS.get(&id)
     }
 
@@ -190,6 +190,7 @@ impl TryFrom<u16> for &'static TlsCipherSuite {
     type Error = CipherSuiteNotFound;
 
     fn try_from(value: u16) -> Result<Self, Self::Error> {
+        let value = value as u32;
         CIPHERS.get(&value).ok_or(CipherSuiteNotFound(()))
     }
 }

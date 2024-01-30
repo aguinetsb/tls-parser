@@ -43,6 +43,15 @@ def getCiphers():
     ciphers.append(("0060", "TLS_RSA_EXPORT1024_WITH_RC4_56_MD5", "unknown"))
     ciphers.append(("0061", "TLS_RSA_EXPORT1024_WITH_RC2_CBC_56_MD5", "unknown"))
 
+    # SSL2 ciphers
+    ciphers.append(("010080", "SSL_CK_RC4_128_WITH_MD5", "SSL2"))
+    ciphers.append(("020080", "SSL_CK_RC4_128_EXPORT40_WITH_MD5", "SSL2"))
+    ciphers.append(("030080", "SSL_CK_RC2_128_CBC_WITH_MD5", "SSL2"))
+    ciphers.append(("040080", "SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5", "SSL2"))
+    ciphers.append(("050080", "SSL_CK_IDEA_128_CBC_WITH_MD5", "SSL2"))
+    ciphers.append(("060040", "SSL_CK_DES_64_CBC_WITH_MD5", "SSL2"))
+    ciphers.append(("0700C0", "SSL_CK_DES_192_EDE3_CBC_WITH_MD5", "SSL2"))
+
     return ciphers
 
 re_tls_with = re.compile('^TLS_(\w+)_WITH_(\w+)_(\w+)$')

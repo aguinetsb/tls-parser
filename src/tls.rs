@@ -78,6 +78,7 @@ impl TlsVersion {
 
 newtype_enum! {
 impl debug TlsVersion {
+    Ssl2         = 0x0002,
     Ssl30        = 0x0300,
     Tls10        = 0x0301,
     Tls11        = 0x0302,
@@ -179,29 +180,29 @@ impl AsRef<u8> for TlsCompressionID {
 
 #[derive(Clone, Copy, Default, PartialEq, Eq, NomBE)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct TlsCipherSuiteID(pub u16);
+pub struct TlsCipherSuiteID(pub u32);
 
 impl TlsCipherSuiteID {
     pub fn get_ciphersuite(self) -> Option<&'static TlsCipherSuite> {
-        TlsCipherSuite::from_id(self.0)
+        TlsCipherSuite::from_id(self.0 as u32)
     }
 }
 
-impl From<TlsCipherSuiteID> for u16 {
-    fn from(c: TlsCipherSuiteID) -> u16 {
+impl From<TlsCipherSuiteID> for u32 {
+    fn from(c: TlsCipherSuiteID) -> u32 {
         c.0
     }
 }
 
 impl Deref for TlsCipherSuiteID {
-    type Target = u16;
+    type Target = u32;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
 
-impl AsRef<u16> for TlsCipherSuiteID {
-    fn as_ref(&self) -> &u16 {
+impl AsRef<u32> for TlsCipherSuiteID {
+    fn as_ref(&self) -> &u32 {
         &self.0
     }
 }
@@ -373,7 +374,7 @@ impl<'a> TlsServerHelloContents<'a> {
             version: TlsVersion(v),
             random,
             session_id: sid,
-            cipher: TlsCipherSuiteID(c),
+            cipher: TlsCipherSuiteID(c as u32),
             compression: TlsCompressionID(co),
             ext: e,
         }
@@ -572,7 +573,7 @@ pub(crate) fn parse_cipher_suites(i: &[u8], len: usize) -> IResult<&[u8], Vec<Tl
     }
     let v = (i[..len])
         .chunks(2)
-        .map(|chunk| TlsCipherSuiteID((chunk[0] as u16) << 8 | chunk[1] as u16))
+        .map(|chunk| TlsCipherSuiteID((chunk[0] as u32) << 8 | chunk[1] as u32))
         .collect();
     Ok((&i[len..], v))
 }
@@ -669,7 +670,7 @@ fn parse_tls_handshake_msg_server_hello_tlsv13draft18(
 ) -> IResult<&[u8], TlsMessageHandshake> {
     let (i, version) = TlsVersion::parse(i)?;
     let (i, random) = take(32usize)(i)?;
-    let (i, cipher) = map(be_u16, TlsCipherSuiteID)(i)?;
+    let (i, cipher) = map(be_u16, |v| TlsCipherSuiteID(v as u32))(i)?;
     let (i, ext) = opt(complete(length_data(be_u16)))(i)?;
     let content = TlsServerHelloV13Draft18Contents {
         version,
@@ -711,7 +712,7 @@ fn parse_tls_handshake_msg_newsessionticket(
 
 fn parse_tls_handshake_msg_hello_retry_request(i: &[u8]) -> IResult<&[u8], TlsMessageHandshake> {
     let (i, version) = TlsVersion::parse(i)?;
-    let (i, cipher) = map(be_u16, TlsCipherSuiteID)(i)?;
+    let (i, cipher) = map(be_u16, |v| TlsCipherSuiteID(v as u32))(i)?;
     let (i, ext) = opt(complete(length_data(be_u16)))(i)?;
     let content = TlsHelloRetryRequestContents {
         version,
